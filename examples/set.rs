@@ -14,6 +14,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>
         .await?;
     cl.update_entry("tg_bot:chat_id", chat_id.as_bytes())
         .await?;
+    let _ = cl.delete_entry("tg_bot:msg_offset").await;
 
     Ok(())
 }

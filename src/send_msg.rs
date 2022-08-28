@@ -21,11 +21,12 @@ impl ProtocolEntry for SendMsg {
         payload.insert("chat_id", &chat_id);
         payload.insert("text", &msg);
         let http_client = reqwest::Client::new();
-        http_client
+        let resp = http_client
             .post(TG_API.to_string() + &bot_token + "/sendMessage")
             .json(&payload)
             .send()
             .await?;
+        println!("{:?}", resp.status());
         Ok(())
     }
 }
