@@ -65,6 +65,20 @@ impl ProtocolEntry for TelegramBot {
                             let args: Vec<&str> = msg.splitn(2, ' ').collect();
                             let res = cl.delete_entry(args[1]).await?;
                             send_msg(&bot_token, &chat_id, &res, &msg_id).await?;
+                        } else if msg.starts_with("/run_local_task ") {
+                            let args: Vec<&str> = msg.splitn(3, ' ').collect();
+                            let res = cl
+                                .run_task(
+                                    args[1],
+                                    args[2].as_bytes(),
+                                    &[Participant {
+                                        user_id: cl.get_user_id()?,
+                                        role: "default".to_string(),
+                                    }],
+                                    false,
+                                )
+                                .await?;
+                            send_msg(&bot_token, &chat_id, &res, &msg_id).await?;
                         }
                         Ok::<(), Box<dyn std::error::Error + Send + Sync + 'static>>(())
                     }
