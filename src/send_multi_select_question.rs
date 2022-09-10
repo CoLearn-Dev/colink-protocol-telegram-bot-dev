@@ -12,21 +12,25 @@ impl ProtocolEntry for SendMultiSelectQuestion {
         param: Vec<u8>,
         _participants: Vec<Participant>,
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>> {
-        let lists: Vec<String> = serde_json::from_slice(&param)?;
+        let lists: Vec<Vec<String>> = serde_json::from_slice(&param)?;
         let bot_token = cl.read_entry("tg_bot:bot_token").await?;
         let bot_token = String::from_utf8_lossy(&bot_token);
         let chat_id = cl.read_entry("tg_bot:chat_id").await?;
         let chat_id = String::from_utf8_lossy(&chat_id);
         let callback_token = uuid::Uuid::new_v4().to_string();
-        let mut inline_keyboard_entries: Vec<HashMap<&str, String>> = vec![];
-        for entry in lists {
-            let mut map: HashMap<&str, String> = HashMap::new();
-            map.insert("text", entry.clone());
-            map.insert("callback_data", format!("{} {}", callback_token, entry));
-            inline_keyboard_entries.push(map);
+        let mut inline_keyboard_entries: Vec<Vec<HashMap<&str, String>>> = vec![];
+        for list in lists {
+            let mut inline_keyboard_entry: Vec<HashMap<&str, String>> = vec![];
+            for entry in list {
+                let mut map: HashMap<&str, String> = HashMap::new();
+                map.insert("text", entry.clone());
+                map.insert("callback_data", format!("{} {}", callback_token, entry));
+                inline_keyboard_entry.push(map);
+            }
+            inline_keyboard_entries.push(inline_keyboard_entry);
         }
         let reply_markup = &format!(
-            "{{\"inline_keyboard\":[{}]}}",
+            "{{\"inline_keyboard\":{}}}",
             serde_json::to_string(&inline_keyboard_entries)?
         );
         println!("{}", reply_markup);
