@@ -5,7 +5,7 @@ use colink_protocol_telegram_bot::send_multi_select_question::*;
 use colink_protocol_telegram_bot::send_waiting_task::*;
 use colink_protocol_telegram_bot::telegram_bot::*;
 
-colink_sdk::protocol_start!(
+colink::protocol_start!(
     ("telegram_bot:default", TelegramBot),
     ("telegram_bot.send_msg:default", SendMsg),
     (

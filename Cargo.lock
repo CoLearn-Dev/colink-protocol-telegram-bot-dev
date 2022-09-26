@@ -410,21 +410,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "colink-protocol-telegram-bot"
-version = "0.1.0"
-dependencies = [
- "colink-sdk",
- "reqwest",
- "serde_json",
- "tokio",
- "tracing",
- "uuid",
-]
-
-[[package]]
-name = "colink-sdk"
-version = "0.1.13"
-source = "git+ssh://git@github.com/CoLearn-Dev/colink-sdk-rust-dev.git?tag=v0.1.13#ff62fbf744a4371598698a8e7f26829b98d884ce"
+name = "colink"
+version = "0.1.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f95be44b8105c0d47e3917a952e855806a350bae6e6da34e6d27a2af4989a6ba"
 dependencies = [
  "async-trait",
  "base64",
@@ -445,6 +434,18 @@ dependencies = [
  "tonic-build",
  "tracing",
  "tracing-subscriber",
+]
+
+[[package]]
+name = "colink-protocol-telegram-bot"
+version = "0.1.0"
+dependencies = [
+ "colink",
+ "reqwest",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "uuid",
 ]
 
 [[package]]

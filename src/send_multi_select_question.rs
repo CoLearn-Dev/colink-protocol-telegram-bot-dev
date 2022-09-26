@@ -1,10 +1,10 @@
-use colink_sdk::*;
+use colink::*;
 use std::collections::HashMap;
 
 const TG_API: &str = "https://api.telegram.org/bot";
 
 pub struct SendMultiSelectQuestion;
-#[colink_sdk::async_trait]
+#[colink::async_trait]
 impl ProtocolEntry for SendMultiSelectQuestion {
     async fn start(
         &self,
