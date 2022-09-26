@@ -123,21 +123,28 @@ impl ProtocolEntry for TelegramBot {
                         } else if args[0] == "2" {
                             // callback 2: confirm task
                             let args: Vec<&str> = args[1].splitn(2, ' ').collect();
-                            if args[1] == "approve" {
-                                cl.confirm_task(args[0], true, false, "").await?;
+                            let res = if args[1] == "approve" {
+                                cl.confirm_task(args[0], true, false, "").await
                             } else if args[1] == "reject" {
-                                cl.confirm_task(args[0], false, true, "").await?;
+                                cl.confirm_task(args[0], false, true, "").await
                             } else if args[1] == "ignore" {
-                                cl.confirm_task(args[0], false, false, "").await?;
-                            }
+                                cl.confirm_task(args[0], false, false, "").await
+                            } else {
+                                Err("invalid action")?
+                            };
+                            let return_msg = match res {
+                                Ok(_) => args[1].to_string(),
+                                Err(err) => err.to_string(),
+                            };
                             edit_msg(
                                 &bot_token,
                                 &chat_id,
                                 &msg_id,
-                                &format!("Confirmed: {}", args[1]),
+                                &format!("Task {}: {}", args[0], &return_msg),
                             )
                             .await?;
-                            answer_callback_query(&bot_token, callback_query_id, args[1]).await?;
+                            answer_callback_query(&bot_token, callback_query_id, &return_msg)
+                                .await?;
                         }
                         Ok::<(), Box<dyn std::error::Error + Send + Sync + 'static>>(())
                     }
