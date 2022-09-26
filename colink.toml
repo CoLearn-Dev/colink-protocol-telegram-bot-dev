@@ -1,0 +1,9 @@
+[package]
+name = "telegram_bot"
+keywords = ["telegram bot"]
+description = "telegram bot"
+entrypoint = "cargo run"
+
+[telegram_bot]
+name = "telegram_bot"
+description = "telegram bot"

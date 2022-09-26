@@ -104,19 +104,41 @@ impl ProtocolEntry for TelegramBot {
                             .unwrap()
                             .splitn(2, ' ')
                             .collect();
-                        cl.create_entry(
-                            &format!("tg_bot:callback:{}", args[0]),
-                            args[1].as_bytes(),
-                        )
-                        .await?;
-                        edit_msg(
-                            &bot_token,
-                            &chat_id,
-                            &msg_id,
-                            &format!("Your choice: {}", args[1]),
-                        )
-                        .await?;
-                        answer_callback_query(&bot_token, callback_query_id, args[1]).await?;
+                        if args[0] == "1" {
+                            // callback 1: create callback entry
+                            let args: Vec<&str> = args[1].splitn(2, ' ').collect();
+                            cl.create_entry(
+                                &format!("tg_bot:callback:{}", args[0]),
+                                args[1].as_bytes(),
+                            )
+                            .await?;
+                            edit_msg(
+                                &bot_token,
+                                &chat_id,
+                                &msg_id,
+                                &format!("Your choice: {}", args[1]),
+                            )
+                            .await?;
+                            answer_callback_query(&bot_token, callback_query_id, args[1]).await?;
+                        } else if args[0] == "2" {
+                            // callback 2: confirm task
+                            let args: Vec<&str> = args[1].splitn(2, ' ').collect();
+                            if args[1] == "approve" {
+                                cl.confirm_task(args[0], true, false, "").await?;
+                            } else if args[1] == "reject" {
+                                cl.confirm_task(args[0], false, true, "").await?;
+                            } else if args[1] == "ignore" {
+                                cl.confirm_task(args[0], false, false, "").await?;
+                            }
+                            edit_msg(
+                                &bot_token,
+                                &chat_id,
+                                &msg_id,
+                                &format!("Confirmed: {}", args[1]),
+                            )
+                            .await?;
+                            answer_callback_query(&bot_token, callback_query_id, args[1]).await?;
+                        }
                         Ok::<(), Box<dyn std::error::Error + Send + Sync + 'static>>(())
                     }
                     .await;
