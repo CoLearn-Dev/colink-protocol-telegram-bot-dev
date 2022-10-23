@@ -116,11 +116,37 @@ impl ProtocolEntry for TelegramBot {
                                 args[1].as_bytes(),
                             )
                             .await?;
+                            let text_escaped: String = text
+                                .chars()
+                                .map(|x| match x {
+                                    '\\' => "\\\\".to_string(),
+                                    '_' => "\\_".to_string(),
+                                    '*' => "\\*".to_string(),
+                                    '[' => "\\[".to_string(),
+                                    ']' => "\\]".to_string(),
+                                    '(' => "\\(".to_string(),
+                                    ')' => "\\)".to_string(),
+                                    '~' => "\\~".to_string(),
+                                    '`' => "\\`".to_string(),
+                                    '>' => "\\>".to_string(),
+                                    '#' => "\\#".to_string(),
+                                    '+' => "\\+".to_string(),
+                                    '-' => "\\-".to_string(),
+                                    '=' => "\\=".to_string(),
+                                    '|' => "\\|".to_string(),
+                                    '{' => "\\{".to_string(),
+                                    '}' => "\\}".to_string(),
+                                    '.' => "\\.".to_string(),
+                                    '!' => "\\!".to_string(),
+                                    _ => x.to_string(),
+                                })
+                                .collect();
                             edit_msg(
                                 &bot_token,
                                 &chat_id,
                                 &msg_id,
-                                &format!("{}\nYour decision: {}", text, args[1]),
+                                &format!("{}\n*Your decision*: `{}`", text_escaped, args[1]),
+                                Some("MarkdownV2"),
                             )
                             .await?;
                             answer_callback_query(&bot_token, callback_query_id, args[1]).await?;
@@ -145,6 +171,7 @@ impl ProtocolEntry for TelegramBot {
                                 &chat_id,
                                 &msg_id,
                                 &format!("Task {}: {}", args[0], &return_msg),
+                                None,
                             )
                             .await?;
                             answer_callback_query(&bot_token, callback_query_id, &return_msg)
@@ -194,11 +221,15 @@ async fn edit_msg(
     chat_id: &str,
     message_id: &str,
     text: &str,
+    parse_mode: Option<&str>,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>> {
     let mut payload = HashMap::new();
     payload.insert("chat_id", chat_id);
     payload.insert("message_id", message_id);
     payload.insert("text", text);
+    if parse_mode.is_some() {
+        payload.insert("parse_mode", parse_mode.unwrap());
+    }
     let http_client = reqwest::Client::new();
     let resp = http_client
         .post(TG_API.to_string() + bot_token + "/editMessageText")
