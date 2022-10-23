@@ -13,6 +13,9 @@ impl ProtocolEntry for SendMsg {
         _participants: Vec<Participant>,
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>> {
         let msg = String::from_utf8_lossy(&param);
+        if msg.is_empty() {
+            return Ok(());
+        }
         let bot_token = cl.read_entry("tg_bot:bot_token").await?;
         let bot_token = String::from_utf8_lossy(&bot_token);
         let chat_id = cl.read_entry("tg_bot:chat_id").await?;

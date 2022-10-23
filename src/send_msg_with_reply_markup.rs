@@ -14,6 +14,9 @@ impl ProtocolEntry for SendMsgWithReplyMarkup {
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>> {
         let params: HashMap<String, String> = serde_json::from_slice(&param)?;
         let msg = params.get("text").unwrap();
+        if msg.is_empty() {
+            return Ok(());
+        }
         let reply_markup = params.get("reply_markup").unwrap();
         let bot_token = cl.read_entry("tg_bot:bot_token").await?;
         let bot_token = String::from_utf8_lossy(&bot_token);

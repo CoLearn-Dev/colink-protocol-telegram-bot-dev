@@ -99,6 +99,10 @@ impl ProtocolEntry for TelegramBot {
                             .as_i64()
                             .unwrap()
                             .to_string();
+                        let text = res["callback_query"]["message"]["text"]
+                            .as_str()
+                            .unwrap()
+                            .to_string();
                         let args: Vec<&str> = res["callback_query"]["data"]
                             .as_str()
                             .unwrap()
@@ -116,7 +120,7 @@ impl ProtocolEntry for TelegramBot {
                                 &bot_token,
                                 &chat_id,
                                 &msg_id,
-                                &format!("Your choice: {}", args[1]),
+                                &format!("{}\nYour decision: {}", text, args[1]),
                             )
                             .await?;
                             answer_callback_query(&bot_token, callback_query_id, args[1]).await?;
