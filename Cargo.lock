@@ -411,9 +411,9 @@ dependencies = [
 
 [[package]]
 name = "colink"
-version = "0.1.18"
+version = "0.1.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "79a6c77ef9cde8b11668e49926ee1e4718fc4f652e478a65be12f79d70be19d1"
+checksum = "82f9b59ee89ecb9e85ca33815787d4cd2332acdd65797b8992c11821b06d6455"
 dependencies = [
  "async-trait",
  "base64",
@@ -434,11 +434,12 @@ dependencies = [
  "tonic-build",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]
 name = "colink-protocol-telegram-bot"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "colink",
  "prost",
