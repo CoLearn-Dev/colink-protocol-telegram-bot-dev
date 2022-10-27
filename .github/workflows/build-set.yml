@@ -1,0 +1,33 @@
+on:
+  release:
+    types: [released]
+
+name: Build set_telegram_bot
+
+jobs:
+  linux-x86_64:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ssh-key: ${{ secrets.SSH_KEY }}
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build
+        run: cargo build --release --all-targets --target x86_64-unknown-linux-gnu
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: target/x86_64-unknown-linux-gnu/release/examples/set
+          asset_name: set_telegram_bot
+          asset_content_type: application/octet-stream
