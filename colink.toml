@@ -1,6 +1,6 @@
 [package]
 name = "telegram_bot"
-version = "0.1.1"
+version = "0.1.2"
 keywords = ["telegram bot"]
 description = "telegram bot"
 entrypoint = "cargo run"
