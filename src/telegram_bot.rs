@@ -41,7 +41,7 @@ impl ProtocolEntry for TelegramBot {
                     &(res["update_id"].as_i64().unwrap() as i32 + 1).to_le_bytes(),
                 )
                 .await?;
-                if res.get("message") != None
+                if res.get("message").is_some()
                     && res["message"]["chat"]["id"].as_i64().unwrap().to_string() == chat_id
                 {
                     let msg_id = res["message"]["message_id"].as_i64().unwrap().to_string();
@@ -86,7 +86,7 @@ impl ProtocolEntry for TelegramBot {
                     if let Err(errmsg) = error_catch {
                         let _ = send_msg(&bot_token, &chat_id, &errmsg.to_string(), &msg_id).await;
                     }
-                } else if res.get("callback_query") != None
+                } else if res.get("callback_query").is_some()
                     && res["callback_query"]["message"]["chat"]["id"]
                         .as_i64()
                         .unwrap()

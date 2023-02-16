@@ -1,3 +1,4 @@
+#![allow(clippy::uninlined_format_args)]
 pub mod edit_msg;
 pub mod init;
 pub mod send_msg;
